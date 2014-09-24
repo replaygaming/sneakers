@@ -34,6 +34,11 @@ describe Sneakers::Queue do
       mock(@mkchan).prefetch(25)
       mock(@mkchan).exchange("sneakers", :type => :direct, :durable => true){ @mkex }
       mock(@mkchan).queue("downloads", :durable => true){ @mkqueue }
+
+      @worker = Object.new
+      worker_class = Object.new
+      stub(@worker).class { worker_class }
+      stub(worker_class).queue_opts { {} }
     end
 
     it "should setup a bunny queue according to configuration values" do
@@ -42,7 +47,7 @@ describe Sneakers::Queue do
       mock(@mkqueue).bind(@mkex, :routing_key => "downloads")
       mock(@mkqueue).subscribe(:block => false, :ack => true)
 
-      q.subscribe(Object.new)
+      q.subscribe(@worker)
     end
 
     it "supports multiple routing_keys" do
@@ -53,10 +58,8 @@ describe Sneakers::Queue do
       mock(@mkqueue).bind(@mkex, :routing_key => "beta")
       mock(@mkqueue).subscribe(:block => false, :ack => true)
 
-      q.subscribe(Object.new)
+      q.subscribe(@worker)
     end
   end
-
-
 end
 

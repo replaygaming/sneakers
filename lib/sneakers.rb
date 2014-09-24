@@ -15,6 +15,7 @@ require 'sneakers/support/production_formatter'
 require 'sneakers/concerns/logging'
 require 'sneakers/concerns/metrics'
 require 'sneakers/handlers/oneshot'
+require 'sneakers/handlers/maxretry'
 require 'sneakers/worker'
 require 'sneakers/publisher'
 

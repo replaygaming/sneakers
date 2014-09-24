@@ -70,21 +70,21 @@ module Sneakers
         end
 
         if @should_ack
-          delivery_tag = delivery_info.delivery_tag
+          headers = metadata.headers
 
           if res == :ack
             # note to future-self. never acknowledge multiple (multiple=true) messages under threads.
-            handler.acknowledge(delivery_tag)
+            handler.acknowledge(delivery_info)
           elsif res == :timeout
-            handler.timeout(delivery_tag)
+            handler.timeout(delivery_info, headers, msg)
           elsif res == :error
-            handler.error(delivery_tag, error)
+            handler.error(delivery_info, headers, msg, error)
           elsif res == :reject
-            handler.reject(delivery_tag)
+            handler.reject(delivery_info, headers, msg)
           elsif res == :requeue
-            handler.reject(delivery_tag, true)
+            handler.reject(delivery_info, headers, msg, true)
           else
-            handler.noop(delivery_tag)
+            handler.noop(delivery_info)
           end
           metrics.increment("work.#{self.class.name}.handled.#{res || 'reject'}")
         end
