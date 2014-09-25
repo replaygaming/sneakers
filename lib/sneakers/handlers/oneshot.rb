@@ -13,6 +13,10 @@ module Sneakers
         @channel.reject(delivery_info.delivery_tag, requeue)
       end
 
+      def requeue(delivery_info, headers, msg)
+        reject(delivery_info, headers, msg, true)
+      end
+
       def error(delivery_info, headers, msg, _err)
         reject(delivery_info, headers, msg)
       end
@@ -21,7 +25,7 @@ module Sneakers
         reject(delivery_info, headers, msg)
       end
 
-      def noop(delivery_info); end
+      def noop(_delivery_info); end
     end
   end
 end

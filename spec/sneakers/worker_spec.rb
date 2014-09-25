@@ -13,7 +13,7 @@ class DummyWorker
              :timeout_job_after => 1,
              :exchange => 'dummy',
              :heartbeat => 5,
-             :handler => Sneakers::Handlers::Maxretry
+             :handler => Sneakers::Handlers::Exponential
 
   def work(msg)
   end
@@ -177,7 +177,7 @@ describe Sneakers::Worker do
       it "should build a queue with given configuration" do
         @dummy_q.name.must_equal('downloads')
         @dummy_q.opts.to_hash.must_equal(
-          {:runner_config_file=>nil, :metrics=>nil, :daemonize=>true, :start_worker_delay=>0.2, :workers=>4, :log=>"sneakers.log", :pid_path=>"sneakers.pid", :timeout_job_after=>1, :prefetch=>40, :threads=>50, :durable=>false, :ack=>false, :amqp=>"amqp://guest:guest@localhost:5672", :vhost=>"/", :exchange=>"dummy", :exchange_type=>:direct, :hooks=>{}, :handler=>Sneakers::Handlers::Maxretry, :heartbeat =>5}
+          {:runner_config_file=>nil, :metrics=>nil, :daemonize=>true, :start_worker_delay=>0.2, :workers=>4, :log=>"sneakers.log", :pid_path=>"sneakers.pid", :timeout_job_after=>1, :prefetch=>40, :threads=>50, :durable=>false, :ack=>false, :amqp=>"amqp://guest:guest@localhost:5672", :vhost=>"/", :exchange=>"dummy", :exchange_type=>:direct, :hooks=>{}, :handler=>Sneakers::Handlers::Exponential, :heartbeat =>5}
         )
       end
     end

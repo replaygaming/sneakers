@@ -82,7 +82,7 @@ module Sneakers
           elsif res == :reject
             handler.reject(delivery_info, headers, msg)
           elsif res == :requeue
-            handler.reject(delivery_info, headers, msg, true)
+            handler.requeue(delivery_info, headers, msg)
           else
             handler.noop(delivery_info)
           end
