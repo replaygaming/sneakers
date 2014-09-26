@@ -51,7 +51,7 @@ module Sneakers
 
         @retry_exchange.publish(
           msg,
-          expiration: miliseconds_to_delay(x_death_count),
+          expiration: miliseconds_to_delay(retry_count),
           headers: { retry_count: retry_count }
         )
       end
