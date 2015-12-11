@@ -20,20 +20,28 @@ Visit the [wiki](https://github.com/jondot/sneakers/wiki) for
 complete docs.
 
 
+[![Build Status](https://travis-ci.org/jondot/sneakers.svg?branch=master)](https://travis-ci.org/jondot/sneakers)
+
+
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'sneakers'
+``` ruby
+gem 'sneakers'
+```
 
 And then execute:
 
-    $ bundle
+``` shell-session
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install sneakers
-
+``` shell-session
+$ gem install sneakers
+```
 
 ## Quick start 
 
@@ -46,7 +54,11 @@ gem 'json'
 gem 'redis'
 ```
 
-And a worker
+How do we add a worker? Firstly create a file and name it as `boot.rb`
+then create a worker named as `Processor`.
+
+> touch boot.rb
+
 
 ```ruby
 require 'sneakers'
@@ -71,9 +83,16 @@ class Processor
 end
 ```
 
+Let's test it out quickly from the command line:
 
-As an example, make a message look like this:
-We'll count errors and error types with Redis. Specifically for an error that looks like this:
+
+```shell-session
+$ sneakers work Processor --require boot.rb
+```
+
+We just told Sneakers to spawn a worker named `Processor`, but first `--require` a file that we dedicate to setting up environment, including workers and what-not.
+
+If you go to your RabbitMQ admin now, you'll see a new queue named `logs` was created. Push a couple messages like below:
 
 ```javascript
 {
@@ -83,18 +102,7 @@ We'll count errors and error types with Redis. Specifically for an error that lo
 }
 ```
 
-
-Let's test it out quickly from the command line:
-
-
-```bash
-sneakers work Processor --require boot.rb
-```
-
-We just told Sneakers to spawn a worker named `Processor`, but first `--require` a file that we dedicate to setting up environment, including workers and what-not.
-
-If you go to your RabbitMQ admin now, you'll see a new queue named `logs` was created. Push a couple messages, and this is the output you should see at your terminal.
-
+And this is the output you should see at your terminal.
 
 ```
 2013-10-11T19:26:36Z p-4718 t-ovqgyb31o DEBUG: [worker-logs:1:213mmy][#<Thread:0x007fae6b05cc58>][logs][{:prefetch=>10, :durable=>true, :ack=>true, :heartbeat_interval=>2, :exchange=>"sneakers"}] Working off: log log
@@ -103,11 +111,11 @@ If you go to your RabbitMQ admin now, you'll see a new queue named `logs` was cr
 2013-10-11T19:26:40Z p-4719 t-ovqgyrx8g INFO: log log
 ```
 
-And redis will show this: 
 
+We'll count errors and error types with Redis.
 
-```
-➜  ~  redis-cli monitor
+``` shell-session
+$ redis-cli monitor
 1381520329.888581 [0 127.0.0.1:49182] "incr" "processor:CODE001"
 ```
 
@@ -139,12 +147,16 @@ Now push a message again and you'll see:
 2013-10-11T19:44:37Z p-9219 t-oxh8owywg INFO: INC: work.Processor.handled.ack
 ```
 
-Which increments start + end, and times the work unit.
-
+Which increments `started` and `handled.ack`, and times the work unit.
 
 
 From here, you can continue over to the
 [Wiki](https://github.com/jondot/sneakers/wiki)
+
+# Compatibility
+
+* Sneakers 1.1.x and up (using the new generation Bunny 2.x) - Ruby 2.x.x
+* Sneakers 1.x.x and down - Ruby 1.9.x, 2.x.x
 
 # Contributing
 
@@ -153,21 +165,10 @@ Fork, implement, add tests, pull request, get my everlasting thanks and a respec
 
 ### Thanks:
 
-* Michael Klishin - @michaelklishin 
-* Ariel Zerahia - @arielze
-* @sergei-matheson
-* Sebastian Edwards - @SebastianEdwards
-* Tor Ivry - @torkale
+To all Sneakers [Contributors](https://github.com/jondot/sneakers/graphs/contributors) - you make this happen, thanks!
 
 
 
 # Copyright
 
-Copyright (c) 2013 [Dotan Nahum](http://gplus.to/dotan) [@jondot](http://twitter.com/jondot). See MIT-LICENSE for further details.
-
-
-
-
-
-
-
+Copyright (c) 2015 [Dotan Nahum](http://gplus.to/dotan) [@jondot](http://twitter.com/jondot). See [LICENSE](LICENSE.txt) for further details.

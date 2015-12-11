@@ -23,6 +23,7 @@ describe Sneakers do
     it 'should configure itself' do
       Sneakers.configure
       Sneakers.logger.wont_be_nil
+      Sneakers.configured?.must_equal(true)
     end
   end
 
@@ -53,14 +54,16 @@ describe Sneakers do
 
 
   describe '#setup_general_logger' do
+    let(:logger_class) { ServerEngine::DaemonLogger }
+
     it 'should detect a string and configure a logger' do
       Sneakers.configure(:log => 'sneakers.log')
-      Sneakers.logger.kind_of?(Logger).must_equal(true)
+      Sneakers.logger.kind_of?(logger_class).must_equal(true)
     end
 
     it 'should detect a file-like thing and configure a logger' do
       Sneakers.configure(:log => STDOUT)
-      Sneakers.logger.kind_of?(Logger).must_equal(true)
+      Sneakers.logger.kind_of?(logger_class).must_equal(true)
     end
 
     it 'should detect an actual logger and configure it' do
